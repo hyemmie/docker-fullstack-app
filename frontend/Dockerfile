@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package.json ./
 RUN npm install
 COPY ./ ./
-CMD ["npm", "run", "start"]
+RUN npm run build
 
 # 운영 환경에는 개발 서버가 없기 때문에 nginx로 대체해야 함
 FROM nginx

@@ -1,0 +1,28 @@
+language: generic
+
+sudo: required
+
+# 도커 환경 만들어주기
+services:
+  - docker
+
+# 구성된 도커 환경에서 도커 이미지 생성 (for test)
+before_install:
+  - docker build -t hyemmie/react-test-app -f ./frontend/Dockerfile.dev ./frontend
+
+# 생성된 테스트 이미지를 이용하여 테스트 수행
+script:
+  - docker run -e CI=true hyemmie/react-test-app npm run test
+
+# 테스트가 성공하면 운영버전 이미지 빌드
+after_success:
+  - docker build -t hyemmie/docker-frontend ./frontend
+  - docker build -t hyemmie/docker-backend ./backend
+  - docker build -t hyemmie/docker-nginx ./nginx
+
+  # docker hub에 로그인해서 이미지 전달
+  - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
+  - docker push hyemmie/docker-frontend
+  - docker push hyemmie/docker-backend
+  - docker push hyemmie/docker-nginx
+# aws eb에서 이미지 가져와서 배포

@@ -27,6 +27,12 @@ services:
     volumes:
       - /app/node_modules
       - ./backend:/app
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: hyemmie1234
+      MYSQL_DATABASE: myapp
+      MYSQL_PORT: 3306
 
   # 배포환경에서는 mysql 컨테이너 사용하지 않고 aws rds 사용하므로 지워주자
   # 그리고 db.js에 aws 호스팅 정보 넣어서 다시 연결해 주어야 함!

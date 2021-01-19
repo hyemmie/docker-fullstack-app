@@ -22,7 +22,21 @@ after_success:
 
   # docker hub에 로그인해서 이미지 전달
   - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
+
   - docker push hyemmie/docker-frontend
   - docker push hyemmie/docker-backend
   - docker push hyemmie/docker-nginx
+
 # aws eb에서 이미지 가져와서 배포
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "docker-fullstack-app"
+  env: "DockerFullstackApp-env"
+  bucket_name: elasticbeanstalk-us-east-2-893905995360
+  bucket_path: "docker-fullstack-app"
+  on:
+    branch: master
+
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
